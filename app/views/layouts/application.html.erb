@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bookers2New</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+  </head>
+
+<body>
+    <div class="header bg-dark">
+        <div class="text-white"><h3>Bookers</h3></div>
+        <nav>
+          <% if user_signed_in? %>
+          <div class="container">
+          <div class="row">
+          <ul class="nav navbar-nav navbar-right col-lg-8 text-muted">
+            <li><span class="glyphicon glyphicon-home" aria-hidden="true"></span><%= link_to "Home", user_path %></li>
+            <li><span class="glyphicon glyphicon-user" aria-hidden="true"></span><%= link_to "Users", users_path %></li>
+            <li><span class="glyphicon glyphicon-book" aria-hidden="true"></span><%= link_to "Books", books_path %></li>
+            <li><span class="glyphicon glyphicon-log-out" aria-hidden="true"></span><%= link_to "logout", root_path %></li>
+          </ul>
+          </div>
+          </div>
+          <% else %>
+          <div class="container">
+          <div class="row">
+          <ul class="nav navbar-nav navbar-right col-lg-4 text-muted">
+            <li><span class="glyphicon glyphicon-home" aria-hidden="true"></span><%= link_to "Home", root_path %></li>
+            <li><span class="glyphicon glyphicon-link" aria-hidden="true"></span><%= link_to "About", home_about_path %></li>
+            <li><span class="glyphicon glyphicon-edit" aria-hidden="true"></span><%= link_to "Sign up", new_user_registration_path %></li>
+            <li><span class="glyphicon glyphicon-log-in" aria-hidden="true"></span><%= link_to "Log in", new_user_session_path %></li>
+          </ul>
+          </div>
+          </div>
+          <% end %>
+        </nav>
+    </div>
+    
+      <%= yield %>
+
+    <footer>
+      <p>CopyRight Infratop.inc</p>
+    </footer>
+
+  </body>
+</html>
+
