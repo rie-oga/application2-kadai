@@ -4,8 +4,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
 
+  attachment :profile_image #画像アップ用のメソッド（attachment）を追加してフィールド名に（profile_image:カラム名からidを抜いたもの）を指定。refileを使用するうえでのルール
+
   has_many :books, dependent: :destroy
 
-  validates :title, presence: true #エラーメッセージのため
-  validates :body, presence: true
+  validates :name, presence: true #エラーメッセージのため
+  validates :introduction, presence: true
 end

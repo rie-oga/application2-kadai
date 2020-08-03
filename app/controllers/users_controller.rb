@@ -7,6 +7,7 @@ class UsersController < ApplicationController
 
     def show
   		@user = User.find(params[:id])
+      @books = @user.books.page(params[:page]).reverse_order#合ってるか分からない。そのユーザーの投稿のみ表示、pageメソッドで、すべての投稿が表示されない
   end
 
   	def create
@@ -16,8 +17,8 @@ class UsersController < ApplicationController
   		   flash[:notice] = "You have creatad book successfully."
   		else
   	   	   @users = User.all
-  	       flash[:notice] = "errors prohibited this obj from being saved:"
-  	       render "books/index"
+  	       flash[:notice]
+  	       render "books/index" #同じコントローラ内の移動ならアクション名だけ。今回は違うコントローラのページに行きたいから、コントローラ名/アクション名
   	    end
   	end
 
@@ -34,8 +35,15 @@ class UsersController < ApplicationController
 
   	private
   	def user_params
-    	params.require(:user).permit(:title, :body)
+    	params.require(:user).permit(:name, :introduction, :profile_image)
   	end
 
 end
 
+
+
+
+    #def destroy
+     # PostComment.find_by(id: params[:id], post_image_id: params[:post_image_id]).destroy
+      #redirect_to post_image_path(params[:post_image_id])
+    #end
