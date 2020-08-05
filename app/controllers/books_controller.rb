@@ -1,39 +1,46 @@
 class BooksController < ApplicationController
+    before_action :authenticate_user!
+    before_action :correct_user, only: [:edit, :update]
 
 	def index
 		@books = Book.all
 		@book = Book.new
+    @users = User.all
+    @user = current_user
   end
 
  	def show
- 		@book = Book.find(params[:id])
-  	end
+    @book = Book.new
+ 		@book_detail = Book.find(params[:id])
+    @user = @book_detail.user
+  end
 
   def create
   	@book = Book.new(book_params)
-         @book.user_id = current_user.id #他人のページでは保存できないように？
-    	if @book.save
-    	   redirect_to book_path
-    	   flash[:notice] = "You have creatad book successfully."
+    @book.user_id = current_user.id
+      if @book.save
+    	   redirect_to book_path(@book.id)
+    	   flash[:notice] = "You have created book successfully."
     	else
-    	   @books = Book.all #mesiterroはここがない、meshoterroではrender先が画像投稿ページだから、いらない。今回は一覧に戻りたいからいると思う。
-    	   flash[:notice]
+    	   @books = Book.all
+         @users = User.all
+         @user = current_user
     	   render :index
     	end
   end
 
   def edit
-    	@book = Book.find(params[:id]) #meshiterroにはeditない
+    @book = Book.find(params[:id])
   end
 
   def update
   		@book = Book.find(params[:id])
-  		if @book.update(user_params)
-  		   redirect_to books_path
-  		   flash[:notice] = "You have creatad book successfully."
+  		if @book.update(book_params)
+  		   redirect_to book_path(@book.id)
+  		   flash[:notice] = "You have created book successfully."
       else
-  		   flash[:notice] = "errors prohibited this obj from being saved:"
-    	   render :index
+  		   flash[:notice]
+    	   render :edit
 	   end
   end
 
@@ -47,5 +54,12 @@ class BooksController < ApplicationController
   	def book_params
     	params.require(:book).permit(:title, :body)
   	end
+
+    def correct_user
+      book = Book.find(params[:id])
+      if book.user.id != current_user.id
+        redirect_to books_path
+      end
+    end
 
 end

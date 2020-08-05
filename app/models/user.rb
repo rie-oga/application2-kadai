@@ -8,6 +8,6 @@ class User < ApplicationRecord
 
   has_many :books, dependent: :destroy
 
-  validates :name, presence: true #エラーメッセージのため
-  validates :introduction, presence: true
+  validates :name, presence: true, length: { in: 2..20 } #エラーメッセージのため
+  validates :introduction, length: { maximum: 50 }
 end

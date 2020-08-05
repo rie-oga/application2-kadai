@@ -1,49 +1,46 @@
 class UsersController < ApplicationController
+before_action :authenticate_user!
+before_action :correct_user, only: [:edit, :update]
 
   	def index
   		@users = User.all
-  		@user = User.new
+  		@user = current_user#合ってるか分からない
+      @book = Book.new#合ってるか分からない
   	end
 
     def show
   		@user = User.find(params[:id])
-      @books = @user.books.page(params[:page]).reverse_order#合ってるか分からない。そのユーザーの投稿のみ表示、pageメソッドで、すべての投稿が表示されない
-  end
-
-  	def create
-  		@user = User.new(user_params)
-  		if @user.save
-  		   redirect_to books_path
-  		   flash[:notice] = "You have creatad book successfully."
-  		else
-  	   	   @users = User.all
-  	       flash[:notice]
-  	       render "books/index" #同じコントローラ内の移動ならアクション名だけ。今回は違うコントローラのページに行きたいから、コントローラ名/アクション名
-  	    end
-  	end
-
-  	def edit
-  		@user = User.find(params[:id])
-  	end
-
-  	 def update
-  		@user = User.find(params[:id])
-  		@user.update(user_params)
- 	    redirect_to user_path(@user.id)
+      @books = @user.books.all
+      @book = Book.new
     end
 
+  	def edit
+      @user_new = User.new
+      @user = User.find(params[:id])
+    end
+
+  	def update
+  		@user = User.find(params[:id])
+  		if @user.update(user_params)
+ 	       redirect_to user_path(@user.id)
+         flash[:notice] = "You have updated user successfully."
+      else
+         @user_new = User.new
+         render :edit
+      end
+    end
 
   	private
   	def user_params
     	params.require(:user).permit(:name, :introduction, :profile_image)
   	end
 
+    def correct_user
+      user = User.find(params[:id])
+      if user.id != current_user.id
+        redirect_to user_path(current_user.id)
+      end
+    end
+
+
 end
-
-
-
-
-    #def destroy
-     # PostComment.find_by(id: params[:id], post_image_id: params[:post_image_id]).destroy
-      #redirect_to post_image_path(params[:post_image_id])
-    #end
